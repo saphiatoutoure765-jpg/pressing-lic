@@ -1,0 +1,80 @@
+<div class="container mt-4">
+  <h2>Gestion des services</h2>
+
+  @if (message) {
+    <div class="alert alert-success">{{ message }}</div>
+  }
+
+  <div class="card mb-4 p-3">
+    <h5>{{ enEdition ? 'Modifier le service' : 'Nouveau service' }}</h5>
+
+    <form (ngSubmit)="soumettre()">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <label class="form-label">Libellé</label>
+          <input type="text" class="form-control" [(ngModel)]="formulaire.libelle" name="libelle" required>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Prix (FCFA)</label>
+          <input type="number" class="form-control" [(ngModel)]="formulaire.prix_unitaire" name="prix_unitaire" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-control" [(ngModel)]="formulaire.description" name="description">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="formulaire.actif" name="actif" id="actifCheck">
+            <label class="form-check-label" for="actifCheck">Actif</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <button type="submit" class="btn btn-primary">
+          {{ enEdition ? 'Enregistrer' : 'Créer' }}
+        </button>
+        @if (enEdition) {
+          <button type="button" class="btn btn-secondary ms-2" (click)="ouvrirCreation()">Annuler</button>
+        }
+      </div>
+    </form>
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Libellé</th>
+      <th>Prix</th>
+      <th>Description</th>
+      <th>Statut</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (service of services(); track service.id) {
+        <tr>
+          <td>{{ service.libelle }}</td>
+          <td>{{ service.prix_unitaire }} FCFA</td>
+          <td>{{ service.description }}</td>
+          <td>
+            @if (service.actif) {
+              <span class="badge bg-success">Actif</span>
+            } @else {
+              <span class="badge bg-secondary">Archivé</span>
+            }
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-1" (click)="ouvrirEdition(service)">Modifier</button>
+            @if (service.actif) {
+              <button class="btn btn-sm btn-outline-warning me-1" (click)="archiver(service)">Archiver</button>
+            }
+            <button class="btn btn-sm btn-outline-danger" (click)="supprimer(service)">Supprimer</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="5">Aucun service pour le moment.</td></tr>
+      }
+    </tbody>
+  </table>
+</div>

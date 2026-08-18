@@ -1,0 +1,49 @@
+<div class="container mt-4">
+  <h2>Gestion des tickets</h2>
+
+  @if (message) {
+    <div class="alert alert-info">{{ message }}</div>
+  }
+
+  @for (ticket of tickets(); track ticket.id) {
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="mb-0">
+            Commande #{{ ticket.id }} — {{ ticket.user?.name }}
+          </h5>
+          <span class="badge {{ classeStatut(ticket.statut) }}">
+            {{ libelleStatut(ticket.statut) }}
+          </span>
+        </div>
+
+        <ul class="list-group list-group-flush mb-3">
+          @for (service of ticket.services; track service.id) {
+            <li class="list-group-item d-flex justify-content-between">
+              <span>{{ service.libelle }} × {{ service.pivot.quantite }}</span>
+              <span>{{ service.prix_unitaire * service.pivot.quantite }} FCFA</span>
+            </li>
+          }
+        </ul>
+
+        <p class="fw-bold">Total : {{ calculerTotal(ticket) }} FCFA</p>
+
+        <div>
+          @if (prochainStatut(ticket.statut)) {
+            <button class="btn btn-sm btn-primary me-2" (click)="changerStatut(ticket)">
+              {{ libelleAction(ticket.statut) }}
+            </button>
+          }
+
+          @if (peutAnnuler(ticket.statut)) {
+            <button class="btn btn-sm btn-outline-danger" (click)="annuler(ticket)">
+              Annuler
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <p>Aucun ticket pour le moment.</p>
+  }
+</div>

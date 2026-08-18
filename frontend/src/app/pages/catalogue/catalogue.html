@@ -1,0 +1,57 @@
+<div class="container mt-4">
+  <h2>Catalogue des services</h2>
+
+  <div class="input-group mb-4" style="max-width: 400px;">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Rechercher un service..."
+      [(ngModel)]="recherche"
+      (keyup.enter)="charger()"
+    >
+    <button class="btn btn-outline-secondary" (click)="charger()">Rechercher</button>
+  </div>
+
+  <div class="row">
+    @for (service of services(); track service.id) {
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{ service.libelle }}</h5>
+            <p class="card-text">{{ service.description }}</p>
+            <p class="fw-bold">{{ service.prix_unitaire }} FCFA</p>
+            <button class="btn btn-primary" (click)="ajouterAuPanier(service)">
+              Ajouter au panier
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <p>Aucun service disponible.</p>
+    }
+  </div>
+
+  @if (panier().length > 0) {
+    <div class="card mt-4 p-3">
+      <h4>Votre panier</h4>
+      <ul class="list-group mb-3">
+        @for (item of panier(); track item.service_id) {
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ item.libelle }} — quantité : {{ item.quantite }}
+            <button class="btn btn-sm btn-outline-danger" (click)="retirerDuPanier(item.service_id)">
+              Retirer
+            </button>
+          </li>
+        }
+      </ul>
+
+      @if (message) {
+        <div class="alert alert-success">{{ message }}</div>
+      }
+
+      <button class="btn btn-success" (click)="deposerCommande()">
+        Déposer la commande
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+  <a class="navbar-brand" routerLink="/">Pressing LIC</a>
+
+  <div class="d-flex align-items-center ms-auto">
+    @if (authService.utilisateurActuel(); as utilisateur) {
+      <span class="text-light me-3">
+        {{ utilisateur.name }}
+        <span class="badge bg-secondary ms-1">{{ utilisateur.role }}</span>
+      </span>
+
+      @if (utilisateur.role === 'client') {
+        <a routerLink="/catalogue" class="btn btn-outline-light btn-sm me-2">Catalogue</a>
+        <a routerLink="/mes-commandes" class="btn btn-outline-light btn-sm me-2">Mes commandes</a>
+      }
+
+      @if (utilisateur.role === 'gestionnaire') {
+        <a routerLink="/gestion-services" class="btn btn-outline-light btn-sm me-2">Services</a>
+        <a routerLink="/gestion-tickets" class="btn btn-outline-light btn-sm me-2">Tickets</a>
+      }
+
+      <button class="btn btn-danger btn-sm" (click)="deconnexion()">Déconnexion</button>
+    }
+  </div>
+</nav>
