@@ -1,0 +1,59 @@
+name: CI - Pressing LIC
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  backend:
+    name: Backend (Laravel)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, pdo, pdo_mysql
+
+      - name: Installer les dépendances Composer
+        working-directory: backend
+        run: composer install --prefer-dist --no-progress
+
+      - name: Copier le fichier .env
+        working-directory: backend
+        run: cp .env.example .env
+
+      - name: Générer la clé d'application
+        working-directory: backend
+        run: php artisan key:generate
+
+      - name: Exécuter les tests
+        working-directory: backend
+        run: php artisan test
+
+  frontend:
+    name: Frontend (Angular)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installer les dépendances npm
+        working-directory: frontend
+        run: npm install
+
+      - name: Build du projet Angular
+        working-directory: frontend
+        run: npm run build
